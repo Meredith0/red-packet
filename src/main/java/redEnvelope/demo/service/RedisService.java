@@ -1,9 +1,12 @@
 package redEnvelope.demo.service;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import redEnvelope.demo.dao.RedisDao;
 
@@ -15,11 +18,10 @@ import redEnvelope.demo.dao.RedisDao;
 @Service
 @Slf4j
 public class RedisService {
-    @Autowired
-    RedisDao redisDao;
 
     public static final int GOOD_SIZE = 1000;
-
+    @Autowired
+    RedisDao redisDao;
     private int WAIT_QUEUE_SIZE = GOOD_SIZE * 3;
     private AtomicInteger size = new AtomicInteger();
     private volatile boolean isFinish = false;
@@ -43,11 +45,11 @@ public class RedisService {
     /**
      * @param sum 拆分个数
      * @param money 总金额
-     *     拆分红包并放进redis队列
      */
-    public Boolean init (String uuid, int sum, int money) {
+    @Async
+    public Future<Boolean> init (String uuid, int sum, int money) {
 
-        return redisDao.initRedisList(uuid, sum, money);
+        return new AsyncResult<Boolean>(redisDao.initRedisList(uuid, sum, money));
     }
 
     //开始抢红包

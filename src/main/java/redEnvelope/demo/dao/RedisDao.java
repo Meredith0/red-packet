@@ -1,6 +1,5 @@
 package redEnvelope.demo.dao;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,16 +14,14 @@ import redEnvelope.demo.util.HBgenerate;
 public class RedisDao {
 
     @Autowired
-    private RedisTemplate<String, String[]> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     public boolean initRedisList (String uuid, int num, int money) {
 
-        List<Integer> list = HBgenerate.getPackage(num, money);
-        List<String> collect = list.stream().map(Object :: toString).collect(Collectors.toList());
+        List<Integer> data = HBgenerate.divideRedPackage(num, money);
+        Long res = redisTemplate.opsForList().leftPush(uuid, data);
+        return res != null && res == data.size();
 
-        Long res = redisTemplate.opsForList().leftPush(uuid, collect.toArray(new String[]{}));
-
-        return res != null && res == list.size();
     }
 
 }
