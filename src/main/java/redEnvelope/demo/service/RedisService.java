@@ -1,4 +1,5 @@
 package redEnvelope.demo.service;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
@@ -59,6 +60,12 @@ public class RedisService {
 
     }
 
+    public List getRedEnvelope (String userId, String uuid) {
+        return redisDao.getRedEnvelope(uuid, userId);
+
+    }
+
+
     // public Response check (String id) {
     //     Response response = new Response();
     //     String resultMsg = "";
@@ -78,52 +85,5 @@ public class RedisService {
     //     return response;
     // }
 
-    // public void start(String packetName) {
-    //     log.info("活动开始");
-    //     log.info("缓存中红包个数为：" + redisDao.getPacketsList().size(packetName));
-    //     isFinish = false;
-    //     while (!isFinish) {
-    //         if (!requestQueue.isEmpty()) {
-    //             String tel = requestQueue.poll();
-    //             threadPoolTaskExecutor.execute(() -> {
-    //                 ++requestCount;
-    //                 if (!redisDao.isMemberOfSuccessList(tel)) {
-    //                     Object packetId = redisDao.getPacketsList().leftPop(packetName);
-    //                     if (StringUtils.isEmpty(packetId)) {
-    //                         //                                这里没有直接设置isFinish为true，是因为可能同时存在其他线程虽然从redis得到了packetId，
-    //                         //                              但由于异常的原因，导致packetId归还到redis里去了，这样其他用户可以再次请求
-    //                         logger.info(tel + "没有抢到红包");
-    //                         redisDao.addToFailedList(tel);
-    //                     } else {
-    //                         try {
-    //                             int result = packetDao.bindRedPacket(packetId.toString(), tel);
-    //                             if (result >= 0) {
-    //                                 logger.info(tel + "抢到红包！");
-    //                                 redisDao.addToSuccessList(tel);
-    //                             } else {
-    //                                 logger.info(tel + "已经抢到过红包");
-    //                                 throw new Exception();
-    //                             }
-    //                         } catch (Exception e) {
-    //                             //                                 如果重复插入手机号会出现主键重复异常，这时候恢复库存；
-    //                             //                                 由于前端的控制，理论上不会重复提交手机号，但为了防止意外或者恶意请求的发升，因此try catch
-    //                             //                                对于拦截重复手机号，后端做了3层拦截
-    //                             //                                第一层：redisDao.isMemberOfSuccessList；
-    //                             //                                第二层：存储过程中根据手机号查询i_order表是否已经存在数据
-    //                             //
-    //                             第三层：存储过程中，由于两个线程同时请求，有可能都会从i_order表中查不到数据，最终都会执行插入操作
-    //                             //                                         但由于tel是不允许重复的，那么就依靠重复异常抛出错误了
-    //                             logger.error(tel + "抢红包出现了异常，现在恢复库存");
-    //                             ++repeatCount;
-    //                             redisDao.getPacketsList().rightPush(packetName, packetId);
-    //                         }
-    //                     }
-    //                 } else {
-    //                     ++repeatCount;
-    //                     logger.warn(tel + "已经抢成功过一次！");
-    //                 }
-    //             });
-    //         }
-    //     }
-    // }
+
 }

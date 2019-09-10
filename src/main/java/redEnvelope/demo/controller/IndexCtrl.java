@@ -32,7 +32,7 @@ public class IndexCtrl {
      * @param userId 用户Id
      * @param sum 红包个数
      * @param money 红包总金额
-     * @return 是否发成功
+     * @return 红包的 uuid / failed
      */
     @RequestMapping (method = RequestMethod.GET, value = "/red-env")
     public String giveRedEnvelope (int userId, int sum, int money)
@@ -44,28 +44,28 @@ public class IndexCtrl {
         Future<Boolean> log = logService.addLog(new RedLog(userId, uuid, sum, money));
 
         while (true) {
-
             if (init.isDone() && log.isDone()) {
-                return "success";
+                return uuid;
             }
             Thread.sleep(10);
         }
-         //if (init.get(3, TimeUnit.SECONDS) && log.get(3, TimeUnit.SECONDS)) {
-        //     return "success";
-        // }
-        // return "failed";
     }
 
-    //抢红包, 此方法仅登记抢红包的用户, 放进请求队列, 之后返回一个id供前端轮询抢红包结果
+    /**
+     * @param uuid 红包的id
+     * @return 抢红包, 此方法仅登记抢红包的用户, 放进请求队列, 之后返回一个id供前端轮询抢红包结果
+     */
     @RequestMapping (method = RequestMethod.GET, value = "/get")
-    public String getRedEnvelope () {
+    public String getRedEnvelope (String uuid) {
         //用户id为随机数
         int num = new Random().nextInt(20000);
         String id = num + "";
-        if (redisService.joinRequestQueue(id)) {
-            return id;
-        }
-        return "failed";
+        // if (redisService.getRedEnvelope(id,uuid)) {
+        //     return id;
+        // }
+        // return "failed";
+
+        return redisService.getRedEnvelope(id, uuid).toString();
     }
 
     //前端定时请求查看是否抢到红包
