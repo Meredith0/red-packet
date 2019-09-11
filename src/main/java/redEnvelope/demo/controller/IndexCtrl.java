@@ -39,6 +39,7 @@ public class IndexCtrl {
         throws InterruptedException, TimeoutException, ExecutionException {
         String uuid = UUID.randomUUID().toString();
         uuid = uuid.replace("-", "");
+        uuid = "{" + uuid + "}";
 
         Future<Boolean> init = redisService.init(uuid, sum, money);
         Future<Boolean> log = logService.addLog(new RedLog(userId, uuid, sum, money));

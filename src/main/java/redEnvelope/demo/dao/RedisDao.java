@@ -39,7 +39,7 @@ public class RedisDao {
     public boolean initRedisList (String uuid, int num, int money) {
 
         log.info("初始化红包进redis未分配队列...");
-        int count=0;
+        int count = 0;
         Integer restAmount = money;
         Integer restPeopleNum = num;
         for (int i = 0; i < num - 1; i++) {
@@ -49,29 +49,30 @@ public class RedisDao {
             restPeopleNum--;
             RedEnvelope o = new RedEnvelope(uuid, amount);
 
-            count+=redisTemplate.opsForList().leftPush(uuid, JSON.toJSONString(o));
+            count += redisTemplate.opsForList().leftPush(uuid, JSON.toJSONString(o));
         }
         RedEnvelope o = new RedEnvelope(uuid, restAmount);
-        count+=redisTemplate.opsForList().leftPush(uuid,  JSON.toJSONString(o));
+        count += redisTemplate.opsForList().leftPush(uuid, JSON.toJSONString(o));
 
-
-        log.info("存入redis未分配队列, count="+ count);
-        return  count == num;
+        log.info("存入redis未分配队列, count=" + count);
+        return count == num;
     }
 
     /**
      * @param und8ed undistributed 未分配队列的uuid, 即红包的uuid
      * @param userId 用户id
      */
-    public List getRedEnvelope (String und8ed,String userId) {
+    public List getRedEnvelope (String und8ed, String userId) {
 
         //d8ed=distributed 已分配红包的uuid
         String d8ed = UUID.randomUUID().toString();
         d8ed = d8ed.replace("-", "");
+        d8ed = "{" + d8ed + "}";
 
         //去重set的uuid
         String distinct = UUID.randomUUID().toString();
         distinct = distinct.replace("-", "");
+        distinct = "{" + distinct + "}";
 
         List<String> keys = new ArrayList<>();
         keys.add(und8ed);

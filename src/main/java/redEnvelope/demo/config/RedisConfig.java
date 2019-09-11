@@ -1,81 +1,27 @@
 package redEnvelope.demo.config;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * @author : Meredith
  * @date : 2019-08-18 23:35
- * @description : jedis 配置
+ * @description : redis集群配置
  */
+
 @Configuration
-@PropertySource ("classpath:application.yml")
-@Slf4j
+@ConditionalOnClass (JedisCluster.class)
 public class RedisConfig {
 
-    @Value ("${spring.redis.host}")
-    private String host;
-
-    @Value ("${spring.redis.port}")
-    private int port;
-
-    @Value ("${spring.redis.timeout}")
-    private int timeout;
-
-    @Value ("${spring.redis.jedis.pool.max-idle}")
-    private int maxIdle;
-
-    @Value ("${spring.redis.jedis.pool.max-wait}")
-    private long maxWaitMillis;
-    @Autowired
     private RedisTemplate redisTemplate;
 
-    // @Bean
-    // public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-    //     RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-    //     redisTemplate.setConnectionFactory(redisConnectionFactory);
-    //
-    //     // 使用Jackson2JsonRedisSerialize 替换默认序列化
-    //     Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-    //
-    //     ObjectMapper objectMapper = new ObjectMapper();
-    //     objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-    //     objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-    //
-    //     jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-    //
-    //     // 设置value的序列化规则和 key的序列化规则
-    //     redisTemplate.setKeySerializer(new StringRedisSerializer());
-    //     redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-    //     redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-    //     redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-    //     redisTemplate.afterPropertiesSet();
-    //     return redisTemplate;
-    // }
-
-    @Bean
-    public JedisPool redisPoolFactory () throws Exception {
-        log.info("JedisPool注入成功！！");
-        log.info("redis地址：" + host + ":" + port);
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxIdle(maxIdle);
-        jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
-
-        // 是否启用pool的jmx管理功能, 默认true
-        jedisPoolConfig.setJmxEnabled(true);
-        return new JedisPool(jedisPoolConfig, host, port, timeout);
-    }
-
     @Autowired (required = false)
-    public void setRedisTemplate (RedisTemplate redisTemplate) {
+    public void setRedisTemplate(RedisTemplate redisTemplate) {
         RedisSerializer stringSerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(stringSerializer);
         redisTemplate.setValueSerializer(stringSerializer);
@@ -83,5 +29,28 @@ public class RedisConfig {
         redisTemplate.setHashValueSerializer(stringSerializer);
         this.redisTemplate = redisTemplate;
     }
+
+    /**
+     * 设置数据存入redis 的序列化方式
+     * redisTemplate序列化默认使用的jdkSerializeable
+     * 存储二进制字节码，导致key会出现乱码，所以自定义序列化类
+     */
+    // @Bean
+    // public RedisTemplate<Object, Object> redisTemplate (RedisConnectionFactory redisConnectionFactory) {
+    //     RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+    //     redisTemplate.setConnectionFactory(redisConnectionFactory);
+    //     Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+    //     ObjectMapper objectMapper = new ObjectMapper();
+    //     objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+    //     objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+    //     jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+    //
+    //     redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+    //     redisTemplate.setKeySerializer(new StringRedisSerializer());
+    //     redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+    //     redisTemplate.afterPropertiesSet();
+    //
+    //     return redisTemplate;
+    // }
 
 }
