@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import redEnvelope.demo.model.RedLog;
 import redEnvelope.demo.service.LogService;
 import redEnvelope.demo.service.RedisService;
 
@@ -43,14 +42,15 @@ public class IndexCtrl {
         //  uuid = "{" + uuid + "}";
 
         Future<Boolean> init = redisService.init(uuid, sum, money);
-        Future<Boolean> log = logService.addLog(new RedLog(userId+"", uuid, sum, money));
+       // Future<Boolean> log = logService.addLog(new RedLog(userId+"", uuid, sum, money));
 
-        while (true) {
-            if (init.isDone() && log.isDone()) {
-                return uuid;
-            }
-            Thread.sleep(10);
-        }
+        // while (true) {
+        //     if (init.isDone() && log.isDone()) {
+        //         return uuid;
+        //     }
+        //     Thread.sleep(10);
+        // }
+        return uuid;
     }
 
     /**

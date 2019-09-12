@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import redEnvelope.demo.dao.RedisDao;
+import redEnvelope.demo.rabbitmq.Sender;
 
 /**
  * @author : Meredith
@@ -23,6 +24,8 @@ public class RedisService {
     public static final int GOOD_SIZE = 1000;
     @Autowired
     RedisDao redisDao;
+    @Autowired
+    Sender sender;
     private int WAIT_QUEUE_SIZE = GOOD_SIZE * 3;
     private AtomicInteger size = new AtomicInteger();
     private volatile boolean isFinish = false;
@@ -61,7 +64,9 @@ public class RedisService {
     }
 
     public List getRedEnvelope (String userId, String uuid) {
-        return redisDao.getRedEnvelope(uuid, userId);
+
+        sender.send2RedList(userId, uuid);
+      //  return redisDao.getRedEnvelope(uuid, userId);
 
     }
 

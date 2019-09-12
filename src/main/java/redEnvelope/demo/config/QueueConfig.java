@@ -1,4 +1,6 @@
 package redEnvelope.demo.config;
+import static redEnvelope.demo.common.Constants.persistence;
+
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +13,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class QueueConfig {
 
+
     @Bean
-    public Queue createQueue () {
-        return new Queue("red-queue");
+    public Queue persistenceQueue () {
+        return new Queue(persistence);
     }
+
+
+
 }

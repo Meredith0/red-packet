@@ -11,4 +11,8 @@ public class Constants {
     public static final String DISTINCT_SET = "{red1}:distinct:";
     public static final String USER_PREFIX = "{red1}:";
 
+
+    public static final String persistence = "persistence";
+    public static final String redList = "redList";
+
 }

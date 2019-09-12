@@ -10,17 +10,19 @@ spring:
         username: root
         password: 123456
         virtual-host: /root
+        listener:
+            direct:
+                consumers-per-queue: 10
+                retry:
+                    max-attempts: 2
 
-
-Spring:
-    #    redis:
-    #        host: 127.0.0.1
-    #        port: 6379
-    #        #连接超时时间(毫秒)
-    #        timeout: 6000
-    #        database: 0
-
-
+            simple:
+                concurrency: 8
+                max-concurrency: 10
+                retry:
+                    max-attempts: 2
+        template:
+            mandatory: true
     redis:
         cluster:
             # 各 Redis 节点信息
@@ -36,13 +38,10 @@ Spring:
             map-underscore-to-camel-case: true
         mapper-locations: classpath*:mapper/*.xml
 
-    rabbitmq:
 
-    logging:
-        level:
-            org.springframework.security: info
 server:
     tomcat:
         max-threads: 500
         min-spare-threads: 100
         accept-count: 400
+

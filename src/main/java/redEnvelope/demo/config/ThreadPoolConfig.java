@@ -15,10 +15,10 @@ public class ThreadPoolConfig {
     public ThreadPoolTaskExecutor threadPoolTaskExecutor(){
         //采用默认的线程拒绝策略，处理出错时直接抛出RejectedExecutionException
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setCorePoolSize(8);
-        threadPoolTaskExecutor.setMaxPoolSize(16);
-        threadPoolTaskExecutor.setKeepAliveSeconds(3000);
-        threadPoolTaskExecutor.setQueueCapacity(2000);
+        threadPoolTaskExecutor.setCorePoolSize(40);
+        threadPoolTaskExecutor.setMaxPoolSize(160);
+        threadPoolTaskExecutor.setKeepAliveSeconds(300);
+        threadPoolTaskExecutor.setQueueCapacity(20);
         return threadPoolTaskExecutor;
     }
 }

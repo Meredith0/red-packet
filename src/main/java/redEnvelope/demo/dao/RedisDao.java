@@ -1,6 +1,5 @@
 package redEnvelope.demo.dao;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Repository;
 import redEnvelope.demo.common.Constants;
 import redEnvelope.demo.model.RedEnvelope;
+import redEnvelope.demo.rabbitmq.Sender;
 
 /**
  * @author : Meredith
@@ -26,11 +25,14 @@ import redEnvelope.demo.model.RedEnvelope;
 public class RedisDao {
 
     private static final Random random = new Random();
-    @Autowired
-    private RedisTemplate redisTemplate;
 
     @Autowired
+    private RedisTemplate redisTemplate;
+    @Autowired
     private PersistenceDao dao;
+
+    @Autowired
+    Sender sender;
     private DefaultRedisScript<List> getRedisScript;
 
     @PostConstruct
@@ -83,16 +85,11 @@ public class RedisDao {
         ArrayList res = (ArrayList) redisTemplate.execute(getRedisScript, keys);
 
         if (res != null) {
-            persistence(res);
+            sender.send2Persistence(res.get(0));
         }
 
         return res;
     }
 
-    @Async
-    void persistence (ArrayList res) {
-        RedEnvelope redEnvelope = JSONObject.parseObject(String.valueOf(res.get(0)), RedEnvelope.class);
-        dao.insert(redEnvelope);
-    }
 
 }
