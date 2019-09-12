@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,10 +40,10 @@ public class IndexCtrl {
         throws InterruptedException, TimeoutException, ExecutionException {
         String uuid = UUID.randomUUID().toString();
         uuid = uuid.replace("-", "");
-        uuid = "{" + uuid + "}";
+        //  uuid = "{" + uuid + "}";
 
         Future<Boolean> init = redisService.init(uuid, sum, money);
-        Future<Boolean> log = logService.addLog(new RedLog(userId, uuid, sum, money));
+        Future<Boolean> log = logService.addLog(new RedLog(userId+"", uuid, sum, money));
 
         while (true) {
             if (init.isDone() && log.isDone()) {
@@ -56,10 +57,10 @@ public class IndexCtrl {
      * @param uuid 红包的id
      * @return 抢红包, 此方法仅登记抢红包的用户, 放进请求队列, 之后返回一个id供前端轮询抢红包结果
      */
-    @RequestMapping (method = RequestMethod.GET, value = "/get")
-    public String getRedEnvelope (String uuid) {
+    @RequestMapping (method = RequestMethod.GET, value = "/get/{uuid}")
+    public String getRedEnvelope ( @PathVariable String uuid) {
         //用户id为随机数
-        int num = new Random().nextInt(20000);
+        int num = new Random().nextInt(9000000);
         String id = num + "";
         // if (redisService.getRedEnvelope(id,uuid)) {
         //     return id;

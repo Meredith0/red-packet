@@ -20,7 +20,7 @@ class LogDaoTest {
         String uuid = UUID.randomUUID().toString();
         uuid = uuid.replace("-", "");
 
-        RedLog redLog = new RedLog(123, uuid, 10, 20);
+        RedLog redLog = new RedLog("123", uuid, 10, 20);
              logDao.insertLog(redLog);
         // logDao.insertLog(123, uuid, 10, 20);
     }

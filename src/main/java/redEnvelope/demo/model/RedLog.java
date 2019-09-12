@@ -9,12 +9,12 @@ import lombok.Data;
 @Data
 public class RedLog {
 
-    Integer userId;
+    String userId;
     String uuid;
     Integer sum;
     Integer money;
 
-    public RedLog (Integer userId, String uuid, Integer sum, Integer money) {
+    public RedLog (String userId, String uuid, Integer sum, Integer money) {
         this.userId = userId;
         this.uuid = uuid;
         this.sum = sum;

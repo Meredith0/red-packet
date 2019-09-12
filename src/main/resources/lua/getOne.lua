@@ -21,7 +21,7 @@ else
         x['userId'] = KEYS[4];
         local res = cjson.encode(x);
         -- 把用户ID放到去重的set里
-        redis.call('hset', KEYS[3], KEYS[4], KEYS[4]);
+        redis.call('hset', KEYS[3], KEYS[4], 'nil');
         -- 把红包放到已消费队列里
         redis.call('lpush', KEYS[2], res);
         return res;

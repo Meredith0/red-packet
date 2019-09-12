@@ -4,6 +4,13 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
+    rabbitmq:
+        port: 5672
+        host: 127.0.0.1
+        username: root
+        password: 123456
+        virtual-host: /root
+
 
 Spring:
     #    redis:
@@ -15,7 +22,6 @@ Spring:
 
 
     redis:
-
         cluster:
             # 各 Redis 节点信息
             nodes: 127.0.0.1:7000,127.0.0.1:7100,127.0.0.1:7200
@@ -24,13 +30,19 @@ Spring:
         serialization:
             indent_output: true
 
-
     mybatis:
         configuration:
             #    开启驼峰映射
             map-underscore-to-camel-case: true
         mapper-locations: classpath*:mapper/*.xml
 
+    rabbitmq:
+
     logging:
         level:
             org.springframework.security: info
+server:
+    tomcat:
+        max-threads: 500
+        min-spare-threads: 100
+        accept-count: 400
