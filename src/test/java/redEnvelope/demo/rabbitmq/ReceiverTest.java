@@ -19,8 +19,6 @@ class ReceiverTest {
     void process () throws InterruptedException {
         while (true) {
 
-            this.sender.send("hello world");
-            Thread.sleep(100);
 
         }
 

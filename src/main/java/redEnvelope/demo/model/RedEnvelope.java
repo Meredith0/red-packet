@@ -28,7 +28,7 @@ public class RedEnvelope implements Serializable {
 
     public RedEnvelope (String uuid, String userId, Integer money) {
         this.uuid = uuid;
-        this.userId = userId.substring(5);
+        this.userId = userId;
         this.money = money;
     }
 

@@ -1,4 +1,6 @@
 package redEnvelope.demo.controller;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import redEnvelope.demo.model.RedLog;
 import redEnvelope.demo.service.LogService;
 import redEnvelope.demo.service.RedisService;
 
@@ -41,16 +44,16 @@ public class IndexCtrl {
         uuid = uuid.replace("-", "");
         //  uuid = "{" + uuid + "}";
 
-        Future<Boolean> init = redisService.init(uuid, sum, money);
-       // Future<Boolean> log = logService.addLog(new RedLog(userId+"", uuid, sum, money));
+        boolean log = logService.addLog(new RedLog(userId + "", uuid, sum, money));
 
-        // while (true) {
-        //     if (init.isDone() && log.isDone()) {
-        //         return uuid;
-        //     }
-        //     Thread.sleep(10);
-        // }
-        return uuid;
+        Future<Boolean> init = redisService.init(uuid, sum, money);
+
+        while (true) {
+            if (init.isDone() && log) {
+                return uuid;
+            }
+            Thread.sleep(10);
+        }
     }
 
     /**
@@ -58,22 +61,30 @@ public class IndexCtrl {
      * @return 抢红包, 此方法仅登记抢红包的用户, 放进请求队列, 之后返回一个id供前端轮询抢红包结果
      */
     @RequestMapping (method = RequestMethod.GET, value = "/get/{uuid}")
-    public String getRedEnvelope ( @PathVariable String uuid) {
+    public String getRedEnvelope (@PathVariable String uuid) {
         //用户id为随机数
         int num = new Random().nextInt(9000000);
-        String id = num + "";
-        // if (redisService.getRedEnvelope(id,uuid)) {
-        //     return id;
-        // }
-        // return "failed";
+        String userId = num + "";
+        redisService.queueing(userId, uuid);
 
-        return redisService.getRedEnvelope(id, uuid).toString();
+        return "userId:" + userId;
     }
 
     //前端定时请求查看是否抢到红包
-    // @GetMapping ("/check")
-    // public String check (@RequestParam ("id") String id) {
-    //     return redisService.check(id).getMessage();
-    // }
+    @RequestMapping (method = RequestMethod.GET, value = "/check")
+    public Map<String ,String > check (String uuid, String userId) throws Exception {
 
+        String res = redisService.check(uuid, userId);
+        //红包抢完了
+        HashMap<String , String > map = new HashMap<>();
+        if (res.equals("-1")) {
+            map.put("code", "emptry");
+        } else if (res == "") {
+            map.put("code", "retry");
+        } else {
+            map.put("code", "finish");
+            map.put("key", res);
+        }
+        return map;
+    }
 }

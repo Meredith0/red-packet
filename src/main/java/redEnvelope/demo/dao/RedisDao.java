@@ -1,4 +1,6 @@
 package redEnvelope.demo.dao;
+import static redEnvelope.demo.common.Constants.MAP1;
+
 import com.alibaba.fastjson.JSON;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Repository;
 import redEnvelope.demo.common.Constants;
@@ -54,12 +57,11 @@ public class RedisDao {
             restAmount -= amount;
             restPeopleNum--;
             RedEnvelope o = new RedEnvelope(uuid, amount);
-
             list.add(JSON.toJSONString(o));
         }
         RedEnvelope o = new RedEnvelope(uuid, restAmount);
         list.add(JSON.toJSONString(o));
-        Long count = redisTemplate.opsForList().leftPushAll(Constants.UNDISTURBED_LIST + uuid, list);
+        Long count = redisTemplate.opsForList().leftPushAll(Constants.LIST1 + uuid, list);
 
         log.info("存入redis未分配队列, count=" + count);
         return count == num;
@@ -69,27 +71,34 @@ public class RedisDao {
      * @param uuid undistributed 未分配队列的uuid, 即红包的uuid
      * @param userId 用户id
      */
-    public List getRedEnvelope (String uuid, String userId) {
+    public void joinQueue (String uuid, String userId) {
 
-        String undisturbed = Constants.UNDISTURBED_LIST + uuid;
-        String disturbed = Constants.DISTURBED_LIST + uuid;
-        String distinct = Constants.DISTINCT_SET + uuid;
-        userId = Constants.USER_PREFIX + userId;
+        String listId = Constants.LIST1 + uuid;
+        String mapId = MAP1 + uuid;
 
         List<String> keys = new ArrayList<>();
-        keys.add(undisturbed);
-        keys.add(disturbed);
-        keys.add(distinct);
-        keys.add(userId);
+        keys.add(listId);
+        keys.add(mapId);
+        ArrayList res = (ArrayList) redisTemplate.execute(getRedisScript,new StringRedisSerializer(),new StringRedisSerializer(),keys,userId);
 
-        ArrayList res = (ArrayList) redisTemplate.execute(getRedisScript, keys);
+        if (res.get(0) != null) {
 
-        if (res != null) {
             sender.send2Persistence(res.get(0));
         }
 
-        return res;
     }
 
+    public String check (String uuid, String userId) {
+        String listId = Constants.LIST1 + uuid;
+
+        String mapId = MAP1 + uuid;
+        long size = this.redisTemplate.opsForList().size(listId);
+        //红包发完了
+        if (size == 0) {
+            return "-1";
+        }
+        return (String) this.redisTemplate.opsForHash().get(mapId, userId);
+
+    }
 
 }

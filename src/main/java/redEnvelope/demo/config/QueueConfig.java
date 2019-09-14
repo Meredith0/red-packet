@@ -1,5 +1,6 @@
 package redEnvelope.demo.config;
 import static redEnvelope.demo.common.Constants.persistence;
+import static redEnvelope.demo.common.Constants.redList;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,9 @@ public class QueueConfig {
         return new Queue(persistence);
     }
 
-
+    @Bean
+    public Queue redListQueue () {
+        return new Queue(redList);
+    }
 
 }

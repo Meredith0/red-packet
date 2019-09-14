@@ -6,13 +6,13 @@ package redEnvelope.demo.common;
  */
 public class Constants {
 
-    public static final String UNDISTURBED_LIST = "{red1}:undisturbed:";
-    public static final String DISTURBED_LIST = "{red1}:disturbed:";
-    public static final String DISTINCT_SET = "{red1}:distinct:";
+    public static final String LIST1 = "{red1}:list:";
+    public static final String MAP1 = "{red1}:set:";
     public static final String USER_PREFIX = "{red1}:";
 
 
     public static final String persistence = "persistence";
     public static final String redList = "redList";
+    public static final String checkList = "checkList";
 
 }

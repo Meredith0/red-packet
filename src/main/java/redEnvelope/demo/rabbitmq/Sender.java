@@ -18,15 +18,16 @@ public class Sender {
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
+    public void send2Persistence (Object res) {
 
-    public void send2Persistence (Object  res) {
-
-        rabbitTemplate.convertAndSend(persistence, res);
+        this.rabbitTemplate.convertAndSend(persistence, res);
     }
 
-    public void send2RedList (Object res, String uuid) {
+    public void send2RedList (String userId, String uuid) {
 
-        rabbitTemplate.convertAndSend(redList, res);
+        String msg = uuid + "#" + userId;
+        this.rabbitTemplate.convertAndSend(redList, msg);
+
     }
 
 }

@@ -1,5 +1,4 @@
 package redEnvelope.demo.service;
-import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +18,9 @@ public class LogService {
     LogDao logDao;
 
 
-    public Future<Boolean> addLog (RedLog redLog) {
+    public boolean addLog (RedLog redLog) {
 
         log.debug("插入redLog..." + redLog.toString());
-        return logDao.insertLog(redLog);
+        return logDao.insertLog(redLog)==1;
     }
 }
