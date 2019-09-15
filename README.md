@@ -35,3 +35,6 @@ JMeter
 ![image](https://github.com/Meredith0/red-packet/blob/master/src/doc/images/500.png)
 
 600个并发请求时错误率高达80%
+
+Tomcat在500个连接后性能急剧下降
+正在用Spring Could重构成分布式的
