@@ -27,14 +27,18 @@ __抢红包__:
 测试环境: 
     
 JMeter
+
+
 测试450个线程同时访问, 错误率0%
 
 ![image](https://github.com/Meredith0/red-packet/blob/master/src/doc/images/450.png)
 
-测试500个请求同时访问, 错误率4.58%, 重试48次
+测试500个线程同时访问, 错误率4.58%, 重试48次
 ![image](https://github.com/Meredith0/red-packet/blob/master/src/doc/images/500.png)
 
 600个并发请求时错误率高达80%
 
 Tomcat在500个连接后性能急剧下降
+
+
 正在用Spring Could重构成分布式的
