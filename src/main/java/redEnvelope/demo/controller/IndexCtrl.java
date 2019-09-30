@@ -78,7 +78,7 @@ public class IndexCtrl {
         //红包抢完了
         HashMap<String , String > map = new HashMap<>();
         if (res.equals("-1")) {
-            map.put("code", "emptry");
+            map.put("code", "empty");
         } else if (res == "") {
             map.put("code", "retry");
         } else {

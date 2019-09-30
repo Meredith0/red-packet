@@ -46,6 +46,7 @@ spring:
 
 server:
     tomcat:
-        max-threads: 600
-        min-spare-threads: 100
-        accept-count: 500
+        max-threads: 1000
+        min-spare-threads: 20
+        accept-count: 800
+        max-connections: 1000
