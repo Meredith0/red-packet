@@ -24,11 +24,10 @@ __抢红包__:
     4. 将RabbitMQ的持久化队列异步存入MySQL
 
 ## 压力测试
-测试环境: 
-    
-JMeter
+测试环境: JMeter
 
-250条线程循环50次，测得结果QPS：877.1；Avg：159；ERROR：0%
+250条线程循环50次, CPU已满载。测得结果QPS：877.1；Avg：159；ERROR：0%
+
 
 ![image](https://github.com/Meredith0/red-packet/blob/master/src/doc/images/test.png)
 
