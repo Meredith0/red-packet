@@ -24,7 +24,7 @@ else
         x['userId'] = ARGV[1];
         local res = cjson.encode(x);
         -- 把用户ID放到去重的set里
-       -- redis.call('hset', KEYS[3], KEYS[4], money);
+        -- redis.call('hset', KEYS[3], KEYS[4], money);
         -- 把红包放到已消费map里
         redis.call('hset', KEYS[2], ARGV[1], res);
         return res;

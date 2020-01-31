@@ -42,7 +42,6 @@ public class IndexCtrl {
         throws InterruptedException, TimeoutException, ExecutionException {
         String uuid = UUID.randomUUID().toString();
         uuid = uuid.replace("-", "");
-        //  uuid = "{" + uuid + "}";
 
         boolean log = logService.addLog(new RedLog(userId + "", uuid, sum, money));
 
@@ -52,7 +51,7 @@ public class IndexCtrl {
             if (init.isDone() && log) {
                 return uuid;
             }
-            Thread.sleep(10);
+            Thread.sleep(100);
         }
     }
 
@@ -79,7 +78,7 @@ public class IndexCtrl {
         HashMap<String , String > map = new HashMap<>();
         if (res.equals("-1")) {
             map.put("code", "empty");
-        } else if (res == "") {
+        } else if ("".equals(res)) {
             map.put("code", "retry");
         } else {
             map.put("code", "finish");
